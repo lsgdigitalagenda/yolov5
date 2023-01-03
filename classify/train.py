@@ -52,6 +52,7 @@ RANK = int(os.getenv('RANK', -1))
 WORLD_SIZE = int(os.getenv('WORLD_SIZE', 1))
 GIT_INFO = check_git_info()
 
+from clearml import Task
 
 def train(opt, device):
     init_seeds(opt.seed + 1 + RANK, deterministic=True)
@@ -60,6 +61,8 @@ def train(opt, device):
         opt.imgsz, str(opt.pretrained).lower() == 'true'
     cuda = device.type != 'cpu'
 
+    # logging
+    task = Task.init(project_name=opt.project, task_name=opt.name)
     # Directories
     wdir = save_dir / 'weights'
     wdir.mkdir(parents=True, exist_ok=True)  # make dir
